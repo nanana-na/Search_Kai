@@ -30,11 +30,15 @@ jobs:
           playwright install --with-deps chromium
 
       - name: Run script
-        env:
-          PYTHONUNBUFFERED: "1"  # ← ログをリアルタイム出力させる設定
         run: python kai_checker.py
 
-      # ★重要: 書き換えた txt ファイルを自動でGitHubに保存する
+      # 追加：リモートの変更を先に取り込む（競合防止）
+      - name: Pull latest changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull origin main --rebase || echo "No rebase needed"
+
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
