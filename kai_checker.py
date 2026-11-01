@@ -10,7 +10,7 @@ def load_config():
 
 def check_facility_availability(page, facility_name, url, target_days):
     """
-    Playwrightを使用して動的カレンダーから空き状況（● または ▲）を正確に取得する
+    動的カレンダーから空室状況（○、△、または各種ステータス）を確実にかぎ分ける
     """
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] チェック中: {facility_name}", flush=True)
     available_dates = []
@@ -18,6 +18,9 @@ def check_facility_availability(page, facility_name, url, target_days):
     try:
         page.goto(url, timeout=60000)
         page.wait_for_selector(".c-calendar", timeout=15000)
+        
+        # 念のためページの読み込み安定を少し待つ
+        page.wait_for_timeout(2000)
         
         calendars = page.locator(".c-calendar").all()
         
@@ -49,10 +52,17 @@ def check_facility_availability(page, facility_name, url, target_days):
                     delta_days = (check_date - today).days
                     
                     if 0 <= delta_days <= target_days:
-                        has_triangle = cell.locator(".triangle").count() > 0
-                        has_circle = cell.locator(".circle").count() > 0
+                        cell_text = cell.inner_text()
+                        cell_html = cell.inner_html()
                         
-                        if has_triangle or has_circle:
+                        # 空室判定の条件を広く網羅（クラス名、テキストの○/△など）
+                        has_circle = "circle" in cell_html.lower() or "○" in cell_text or "icon-circle" in cell_html
+                        has_triangle = "triangle" in cell_html.lower() or "△" in cell_text or "icon-triangle" in cell_html
+                        
+                        # もし「×」や「満室」などの文字が明示されていなければ、空きマークの有無を判定
+                        is_booked_out = "×" in cell_text or "満室" in cell_text or "受付終了" in cell_text
+                        
+                        if (has_circle or has_triangle) and not is_booked_out:
                             available_dates.append(date_str)
                 except Exception:
                     continue
