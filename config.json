@@ -1,0 +1,67 @@
+{
+  "target_days": 44,
+  "check_interval_hours": 1,
+  "output_filename": "available_dates.txt",
+  "facilities": [
+    {
+      "name": "界 ポロト",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000129/0000000063"
+    },
+    {
+      "name": "界 津軽",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000114/0000000431"
+    },
+    {
+      "name": "界 秋保",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000133/0000000016"
+    },
+    {
+      "name": "界 鬼怒川",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000121/0000000173"
+    },
+    {
+      "name": "界 草津",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000135/0000000030"
+    },
+    {
+      "name": "界 箱根",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000117/0000000338"
+    },
+    {
+      "name": "界 仙石原",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000124/0000000116"
+    },
+    {
+      "name": "界 アンジン",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000122/0000000092"
+    },
+    {
+      "name": "界 伊東",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000108/0000000523"
+    },
+    {
+      "name": "界 遠州",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000113/0000000566"
+    },
+    {
+      "name": "界 アルプス",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000123/0000000079"
+    },
+    {
+      "name": "界 奥飛騨",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000134/0000000022"
+    },
+    {
+      "name": "界 雲仙",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000131/0000000083"
+    },
+    {
+      "name": "界 湯布院",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000130/0000000066"
+    },
+    {
+      "name": "界 霧島",
+      "url": "https://hoshinoresorts.com/plans/JA/0000000127/0000000086"
+    }
+  ]
+}
