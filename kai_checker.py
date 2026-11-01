@@ -72,9 +72,26 @@ def check_facility_availability(page, facility_name, url, target_days):
         
     return sorted(list(set(available_dates)))
 
+def format_date_str(date_str):
+    """YYYY-MM-DD を M/D(曜日) に変換する"""
+    try:
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
+        weekdays = ["月", "火", "水", "木", "金", "土", "日"]
+        w = weekdays[dt.weekday()]
+        return f"{dt.month}/{dt.day}({w})"
+    except Exception:
+        return date_str
+
 def save_results_as_html(results, filename, config_facilities):
-    """シンプル・白黒グレーのコンパクトなHTMLとして保存する"""
+    """日付ありを優先表示し、月/日(曜日)形式でコンパクトなHTMLとして保存する"""
     url_map = {f["name"]: f["url"] for f in config_facilities}
+    
+    # 空室がある施設を上位にソートする
+    sorted_results = sorted(
+        results.items(),
+        key=lambda item: (len(item[1]) > 0),
+        reverse=True
+    )
     
     html_content = f"""<!DOCTYPE html>
 <html lang="ja">
@@ -87,37 +104,37 @@ def save_results_as_html(results, filename, config_facilities):
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             max-width: 650px;
             margin: 0 auto;
-            padding: 16px;
+            padding: 20px;
             background-color: #ffffff;
             color: #111111;
-            line-height: 1.4;
+            line-height: 1.5;
         }}
         h1 {{
-            font-size: 1.25rem;
+            font-size: 1.4rem;
             font-weight: 600;
             margin-bottom: 4px;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 2px solid #333333;
             padding-bottom: 8px;
         }}
         .meta {{
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             color: #666666;
             margin-bottom: 24px;
         }}
         .facility-block {{
             margin-bottom: 20px;
-            border-bottom: 1px solid #eeeeee;
+            border-bottom: 1px solid #e0e0e0;
             padding-bottom: 16px;
         }}
         .facility-name {{
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }}
         .facility-name a {{
             color: #000000;
             text-decoration: none;
-            border-bottom: 1px solid #999999;
+            border-bottom: 1px solid #666666;
         }}
         .facility-name a:hover {{
             border-color: #000000;
@@ -125,22 +142,22 @@ def save_results_as_html(results, filename, config_facilities):
         .date-list {{
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 6px;
             list-style: none;
             padding: 0;
             margin: 0;
         }}
         .date-badge {{
-            background-color: #f4f4f4;
-            color: #222222;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            font-family: monospace;
+            background-color: #f0f0f0;
+            color: #111111;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
         }}
         .no-room {{
             color: #888888;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
         }}
     </style>
 </head>
@@ -149,18 +166,19 @@ def save_results_as_html(results, filename, config_facilities):
     <div class="meta">更新: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
 """
 
-    for facility_name, dates in results.items():
+    for facility_name, dates in sorted_results:
         facility_url = url_map.get(facility_name, "https://www.hoshinoresorts.com/sp/kaitabi20s/")
         html_content += f"""
     <div class="facility-block">
         <div class="facility-name">
-            <a href="{facility_url}" target="_blank">{facility_name}↗</a>
+            <a href="{facility_url}" target="_blank">{facility_name} ↗</a>
         </div>
 """
         if dates:
             html_content += '        <ul class="date-list">\n'
             for d in dates:
-                html_content += f'            <li class="date-badge">{d}</li>\n'
+                formatted_d = format_date_str(d)
+                html_content += f'            <li class="date-badge">{formatted_d}</li>\n'
             html_content += '        </ul>\n'
         else:
             html_content += '        <div class="no-room">空室なし</div>\n'
