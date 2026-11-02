@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 import time
+from playwright.sync_api import sync_playwright
 from zoneinfo import ZoneInfo
 
 # 日本時間のタイムゾーン定義
